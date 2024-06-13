@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  dmz_server:
+    image: vulhub/cacti:1.2.22
+    container_name: dmz_cacti
+    networks:
+      dmz_network:
+        ipv4_address: 10.0.2.10
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    entrypoint:
+      - bash
+      - /entrypoint.sh
+    volumes:
+      - ./entrypoint.sh:/entrypoint.sh
+    command: apache2-foreground
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=cacti
+    networks:
+      dmz_network:
+        ipv4_address: 10.0.2.11
+    ports:
+      - "3306:3306"
+
+  intranet_server:
+    image: vulhub/grafana:8.2.6
+    container_name: intranet_grafana_server
+    networks:
+      intranet_network:
+        ipv4_address: 10.0.1.10
+
+networks:
+  dmz_network:
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
+
+  intranet_network:
+    ipam:
+      config:
+        - subnet: 10.0.1.0/24

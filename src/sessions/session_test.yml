@@ -1,0 +1,60 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+description: TOSCA Pentest scenario template for deploying two servers with specific OS, web applications, and associated vulnerabilities.
+
+metadata:
+  template_name: Pentest_Scenario
+  template_author: Michele Cerreta
+  template_version: 1.0.6
+
+node_types:
+  pts_vulnerability:
+    derived_from: tosca.nodes.Root
+    properties:
+      CVE:
+        type: string
+      description:
+        type: string
+      cvss:
+        type: float
+      version:
+        type: string
+    requirements:
+      - host:
+          capability: tosca.capabilities.Node
+          node: pts_webapp
+          relationship: tosca.relationships.HostedOn
+
+  pts_compute:
+    derived_from: tosca.nodes.Compute
+    properties:
+      os:
+        type: map
+      ip:
+        type: string
+      ports:
+        type: list
+        entry_schema:
+          type: integer
+
+  pts_port:
+    derived_from: tosca.nodes.Root
+    properties:
+      port_number:
+        type: integer
+      service:
+        type: string
+
+  pts_webapp:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      app_name:
+        type: string
+      app_version:
+        type: string
+      host_ip:
+        type: string
+      port_number:
+        type: integer
+
+    

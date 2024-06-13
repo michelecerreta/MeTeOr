@@ -1,0 +1,248 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: Comprehensive Nmap Scan Results
+topology_template:
+  node_templates:
+    192.168.1.1:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 53
+        - 80
+        - 139
+        - 443
+        - 445
+        - 631
+        - 5000
+        - 5001
+        - 6699
+        - 8000
+        - 8080
+        - 49152
+        status: up
+        os: Unknown
+        services:
+        - 53: domain
+        - 80: http
+        - 139: netbios-ssn
+        - 443: https
+        - 445: microsoft-ds
+        - 631: ipp
+        - 5000: upnp
+        - 5001: commplex-link
+        - 6699: napster
+        - 8000: http-alt
+        - 8080: http-proxy
+        - 49152: ''
+    192.168.1.100:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 8081
+        status: up
+        os: Unknown
+        services:
+        - 8081: blackice-icecap
+    192.168.1.103:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 49152
+        - 62078
+        status: up
+        os: Unknown
+        services:
+        - 49152: ''
+        - 62078: iphone-sync
+    192.168.1.123:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 1080
+        - 6543
+        - 8888
+        - 10001
+        status: up
+        os: Unknown
+        services:
+        - 1080: socks
+        - 6543: mythtv
+        - 8888: sun-answerbook
+        - 10001: scp-config
+    192.168.1.135:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []
+    192.168.1.15:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 5001
+        status: up
+        os: Unknown
+        services:
+        - 5001: commplex-link
+    192.168.1.154:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 80
+        status: up
+        os: Unknown
+        services:
+        - 80: http
+    192.168.1.164:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []
+    192.168.1.170:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []
+    192.168.1.187:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 5000
+        - 7000
+        status: up
+        os: Unknown
+        services:
+        - 5000: upnp
+        - 7000: afs3-fileserver
+    192.168.1.189:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 22
+        status: up
+        os: Unknown
+        services:
+        - 22: ssh
+    192.168.1.241:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 6668
+        status: up
+        os: Unknown
+        services:
+        - 6668: irc
+    192.168.1.242:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 1080
+        - 6543
+        - 8888
+        status: up
+        os: Unknown
+        services:
+        - 1080: socks
+        - 6543: mythtv
+        - 8888: sun-answerbook
+    192.168.1.248:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 6668
+        status: up
+        os: Unknown
+        services:
+        - 6668: irc
+    192.168.1.249:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 1080
+        - 6543
+        - 8888
+        status: up
+        os: Unknown
+        services:
+        - 1080: socks
+        - 6543: mythtv
+        - 8888: sun-answerbook
+    192.168.1.33:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 80
+        status: up
+        os: Unknown
+        services:
+        - 80: http
+    192.168.1.36:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []
+    192.168.1.42:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 6668
+        status: up
+        os: Unknown
+        services:
+        - 6668: irc
+    192.168.1.55:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []
+    192.168.1.57:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 80
+        status: up
+        os: Unknown
+        services:
+        - 80: http
+    192.168.1.61:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 6668
+        status: up
+        os: Unknown
+        services:
+        - 6668: irc
+    192.168.1.73:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 6668
+        status: up
+        os: Unknown
+        services:
+        - 6668: irc
+    192.168.1.83:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open:
+        - 80
+        status: up
+        os: Unknown
+        services:
+        - 80: http
+    192.168.1.87:
+      type: tosca.nodes.Network.Port
+      properties:
+        ports_open: []
+        status: up
+        os: Unknown
+        services: []

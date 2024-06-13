@@ -1,0 +1,44 @@
+modules:
+  - name: NmapScan
+    description: Nmap is a network scanner capable of retrieving basic information about hosts and applications
+    path: modules.nmap_scan
+    required_libs: ['nmap']
+    requires: ['', 'pts_compute', 'pts_webapp']
+  - name: WigScan
+    description: Wig is a banner grabbing utility to detect web applications name and version
+    path: modules.wig_scan
+    required_libs: []
+    requires: ['pts_webapp']
+  - name: DetectWebApp
+    description: Module that extracts headers and meta information to determine wether a web application is running on selected host/port
+    path: modules.detect_webapp
+    required_libs: ['requests', 'bs4', 'yaml']
+    requires: ['pts_compute', 'pts_webapp']
+  - name: CreateNode
+    description: Create new TOSCA nodes manually
+    path: modules.create_node
+    requires: ['']
+  - name: EditNode
+    description: Edit a TOSCA node manually
+    path: modules.edit_node
+    requires: ['', 'pts_compute', 'pts_webapp', 'pts_vulnerability', 'pts_exploit']
+  - name: MSFind
+    description: Find App Vulnerabilites on metasploit
+    path: modules.msf_find
+    required_libs: ['pymetasploit3']
+    requires: ['','pts_webapp', 'pts_vulnerability', 'pts_exploit']
+  - name: ExploitFinder
+    description: Searches the ExploitDB database for exploits starting from a CVE number
+    path: modules.exploitfinder
+    required_libs: ['requests', 'pyxploitdb', 'yaml']
+    requires: ['pts_vulnerability']
+  - name: VulnFinder
+    description: Uses the public Penterep Api to search vulnerabilities based on vendor or product name and other parameters. Allows to filter by vulnerability type, CVSS score, or App Version
+    path: modules.vulnfinder
+    required_libs: ['requests', 'yaml']
+    requires: ['pts_webapp']
+  - name: DeleteNode
+    description: Delete a TOSCA node from the template
+    path: modules.delete_node
+    required_libs: ['yaml']
+    requires: ['', 'pts_compute', 'pts_webapp', 'pts_vulnerability', 'pts_exploit']

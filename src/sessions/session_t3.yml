@@ -1,0 +1,146 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: TOSCA Pentest scenario template for deploying two servers with specific
+  OS, web applications, and associated vulnerabilities.
+metadata:
+  template_name: Pentest_Scenario
+  template_author: Michele Cerreta
+  template_version: 1.0.6
+node_types:
+  pts_vulnerability:
+    derived_from: tosca.nodes.Root
+    properties:
+      CVE:
+        type: string
+      description:
+        type: string
+      severity_score:
+        type: float
+      version_from:
+        type: string
+      version_to:
+        type: string
+    requirements:
+    - host:
+        capability: tosca.capabilities.Node
+        node: pts_webapp
+        relationship: tosca.relationships.HostedOn
+  pts_compute:
+    derived_from: tosca.nodes.Compute
+    properties:
+      os:
+        type: map
+      ip:
+        type: string
+      ports:
+        type: list
+        entry_schema:
+          type: integer
+  pts_port:
+    derived_from: tosca.nodes.Root
+    properties:
+      port_number:
+        type: integer
+      service:
+        type: string
+  pts_webapp:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      app_name:
+        type: string
+      app_version:
+        type: string
+      host_ip:
+        type: string
+      port_number:
+        type: integer
+topology_template:
+  node_templates:
+    wa10.0.1.7:3000:
+      type: pts_webapp
+      properties:
+        host_ip: 10.0.1.7
+        port_number: 3000
+        app_name: Grafana
+        app_version: ''
+      requirements:
+      - host:
+          node: 10.0.1.7_compute
+          relationship: hosted_on
+    host_1:
+      type: pts_compute
+      properties:
+        os: Linux 4.15 - 5.6
+        ip: 10.0.2.2
+        open_ports:
+        - 80
+    host_2:
+      type: pts_compute
+      properties:
+        os:
+          name: Unknown
+        ip: 10.0.1.7
+        open_ports:
+        - 3000
+    wa10.0.2.2:80:
+      type: pts_webapp
+      properties:
+        host_ip: 10.0.2.2
+        port_number: 80
+        app_name: elFinder
+        app_version: 2.4.52
+      requirements:
+      - host:
+          node: host_1
+          relationship: hosted_on
+    elFinder_vulnerability_CVE-2019-9194:
+      type: pts_vulnerability
+      properties:
+        CVE: CVE-2019-9194
+        description: elFinder before 2.1.48 has a command injection vulnerability
+          in the PHP connector.
+        cvss: '7.5'
+        version: 1.0.1
+      requirements:
+        node: wa10.0.2.2:80
+        relationship: hosted_on
+    Grafana_vulnerability_CVE-2021-43798:
+      type: pts_vulnerability
+      properties:
+        CVE: CVE-2021-43798
+        description: 'Grafana is an open-source platform for monitoring and observability.
+          Grafana versions 8.0.0-beta1 through 8.3.0 (except for patched versions)
+          iss vulnerable to directory traversal, allowing access to local files. The
+          vulnerable URL path is: `<grafana_host_url>/public/plugins//`, where is
+          the plugin ID for any installed plugin. At no time has Grafana Cloud been
+          vulnerable. Users are advised to upgrade to patched versions 8.0.7, 8.1.8,
+          8.2.7, or 8.3.1. The GitHub Security Advisory contains more information
+          about vulnerable URL paths, mitigation, and the disclosure timeline.'
+        cvss: '5.0'
+        version: 8.0.0
+      requirements:
+        node: wa10.0.1.7:3000
+        relationship: hosted_on
+    exploit_50581:
+      type: pts_exploit
+      properties:
+        CVE: '50581'
+        description: Grafana 8.3.0 - Directory Traversal and Arbitrary File Read
+        exploit_url: https://www.exploit-db.com/exploits/50581
+        platform: Multiple
+        date: '2021-12-09'
+      requirements:
+      - host:
+          node: Grafana_vulnerability_CVE-2021-43798
+          relationship: tosca.relationships.HostedOn
+    exploit_46481:
+      type: pts_exploit
+      properties:
+        CVE: '46481'
+        description: elFinder 2.1.47 - &#039;PHP connector&#039; Command Injection
+        exploit_url: https://www.exploit-db.com/exploits/46481
+        platform: PHP
+        date: '2019-03-04'
+      requirements:
+      - host:
+          node: elFinder_vulnerability_CVE-2019-9194
+          relationship: tosca.relationships.HostedOn

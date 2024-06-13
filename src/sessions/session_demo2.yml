@@ -1,0 +1,168 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+description: TOSCA Pentest scenario template for deploying two servers with specific
+  OS, web applications, and associated vulnerabilities.
+metadata:
+  template_name: Pentest_Scenario
+  template_author: Michele Cerreta
+  template_version: 1.0.6
+node_types:
+  pts_vulnerability:
+    derived_from: tosca.nodes.Root
+    properties:
+      CVE:
+        type: string
+      description:
+        type: string
+      cvss:
+        type: float
+      version:
+        type: string
+      confirmed:
+        type: bool
+      host:
+        type: string
+    requirements:
+    - host:
+        capability: tosca.capabilities.Node
+        node: pts_webapp
+        relationship: tosca.relationships.HostedOn
+  pts_exploit:
+    derived_from: tosca.nodes.Root
+    properties:
+      description:
+        type: string
+      platform:
+        type: string
+      date:
+        type: string
+      host:
+        type: string
+    requirements:
+    - host:
+        capability: tosca.capabilities.Node
+        node: pts_vulnerability
+        relationship: tosca.relationships.HostedOn
+  pts_compute:
+    derived_from: tosca.nodes.Compute
+    properties:
+      os:
+        type: map
+      ip:
+        type: string
+      open_ports:
+        type: list
+        entry_schema:
+          type: integer
+  pts_port:
+    derived_from: tosca.nodes.Root
+    properties:
+      port_number:
+        type: integer
+      service:
+        type: string
+  pts_webapp:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      app_name:
+        type: string
+      app_version:
+        type: string
+      ip:
+        type: string
+      open_ports:
+        type: integer
+topology_template:
+  node_templates:
+    host_10.0.2.10:
+      type: pts_compute
+      properties:
+        os:
+          name: Linux 4.15 - 5.6
+        ip: 10.0.2.10
+        open_ports:
+        - 80
+    wa10.0.2.10:80:
+      type: pts_webapp
+      properties:
+        ip: 10.0.2.10
+        port_number: 80
+        app_name: Cacti
+        app_version: 1.2.22
+      requirements:
+      - host:
+          node: host_10.0.2.10
+          relationship: hosted_on
+    Cacti_vulnerability:
+      type: pts_vulnerability
+      properties:
+        description: Cacti 1.2.22 unauthenticated command injection
+        confirmed: 'true'
+        host: &id001
+          node: wa10.0.2.10:80
+          relationship: hosted_on
+      requirements: *id001
+    wa_host_ms_1:exploit/linux/http/cacti_unauthenticated_cmd_injection:
+      type: pts_exploit
+      properties:
+        description: Cacti 1.2.22 unauthenticated command injection exploit/linux/http/cacti_unauthenticated_cmd_injection
+        platform: Metasploit exploit
+        date: '2022-12-05'
+        host: Cacti_vulnerability
+      requirements:
+      - host:
+          node: wa10.0.2.10:80
+          relationship: tosca.relationships.HostedOn
+    host_10.0.1.1:
+      type: pts_compute
+      properties:
+        os:
+          name: Unknown
+        ip: 10.0.1.1
+        open_ports: []
+    host_10.0.1.10:
+      type: pts_compute
+      properties:
+        os:
+          name: Unknown
+        ip: 10.0.1.10
+        open_ports:
+        - 3000
+    host_10.0.1.20:
+      type: pts_compute
+      properties:
+        os:
+          name: Unknown
+        ip: 10.0.1.20
+        open_ports:
+        - 80
+    wa10.0.1.10:3000:
+      type: pts_webapp
+      properties:
+        ip: 10.0.1.10
+        port_number: 3000
+        app_name: Grafana
+        app_version: Unknown
+      requirements:
+      - host:
+          node: host_10.0.1.10
+          relationship: hosted_on
+    Grafana_vulnerability:
+      type: pts_vulnerability
+      properties:
+        description: Grafana Plugin Path Traversal
+        confirmed: 'true'
+        host: &id002
+          node: wa10.0.1.10:3000
+          relationship: hosted_on
+      requirements: *id002
+    wa_host_ms_1:auxiliary/scanner/http/grafana_plugin_traversal:
+      type: pts_exploit
+      properties:
+        description: Grafana Plugin Path Traversal auxiliary/scanner/http/grafana_plugin_traversal
+        platform: Metasploit auxiliary
+        date: ''
+        host: Grafana_vulnerability
+      requirements:
+      - host:
+          node: wa10.0.1.10:3000
+          relationship: tosca.relationships.HostedOn
